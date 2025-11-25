@@ -1,41 +1,105 @@
-import { Link, NavLink, useLocation, useNavigate } from 'react-router-dom';
-import CartBadge from './CartBadge';
-import ThemeToggle from './ThemeToggle';
+import { Link, useLocation, useNavigate } from "react-router-dom";
+import { useAuth } from "../context/AuthProvider";
+import ThemeToggle from "./ThemeToggle";
+import CartBadge from "./CartBadge";
+import "../styles/header.css";
 
 export default function Header() {
-  const navigate = useNavigate();
+  const { user, token, isAuthenticated, logout } = useAuth();
   const location = useLocation();
-  const showBack = location.pathname !== '/';
+  const navigate = useNavigate();
+
+  const loggedIn = isAuthenticated ?? !!token;
+
+  function handleLogout() {
+    logout();
+    navigate("/");
+  }
+
+  const firstName =
+    user?.name || (user?.email ? user.email.split("@")[0] : null);
 
   return (
-    <header className="site-header">
-      <div className="container nav" style={{ gap: 16 }}>
-        <div style={{ display:'flex', alignItems:'center', gap:12 }}>
-          {showBack && (
-            <button
-              type="button"
-              className="btn btn-ghost"
-              aria-label="Voltar"
-              onClick={() => navigate(-1)}
-              title="Voltar"
-              style={{ padding: '8px 10px', fontWeight: 700 }}
-            >
-              ←
-            </button>
-          )}
-          <Link to="/" style={{ fontWeight: 800, fontSize: 18, textDecoration: 'none' }}>
-            NexusCart
-          </Link>
-        </div>
+    <header className="shop-header">
+      <div className="shop-container">
+        {/* Logo */}
+        <Link to="/" className="shop-logo">
+          <span className="dot" />
+          <span>NexusCart</span>
+        </Link>
 
-        <nav style={{ display:'flex', gap:12, alignItems:'center' }}>
-          <NavLink to="/" end>Home</NavLink>
-          <NavLink to="/products">Produtos</NavLink>
-          <NavLink to="/login">Entrar</NavLink>
-          <NavLink to="/register" className="btn btn-primary btn-cta">Criar conta</NavLink>
-          <CartBadge />
-          <ThemeToggle />
+        {/* Navegação principal */}
+        <nav className="shop-nav">
+          <Link
+            to="/"
+            className={
+              "shop-link" +
+              (location.pathname === "/" ? " shop-link-active" : "")
+            }
+          >
+            Início
+          </Link>
+
+          <Link
+            to="/products"
+            className={
+              "shop-link" +
+              (location.pathname.startsWith("/products")
+                ? " shop-link-active"
+                : "")
+            }
+          >
+            Produtos
+          </Link>
+
+          {loggedIn && (
+            <Link
+              to="/account/orders"
+              className={
+                "shop-link" +
+                (location.pathname.startsWith("/account")
+                  ? " shop-link-active"
+                  : "")
+              }
+            >
+              Meus pedidos
+            </Link>
+          )}
         </nav>
+
+        {/* Ações à direita */}
+        <div className="shop-actions">
+          {/* Tema */}
+          <ThemeToggle />
+
+          {/* Carrinho */}
+          <CartBadge />
+
+          {/* Login / Logout */}
+          {!loggedIn ? (
+            <div className="shop-auth">
+              <Link to="/login" className="shop-btn-outline">
+                Entrar
+              </Link>
+              <Link to="/register" className="shop-btn">
+                Criar conta
+              </Link>
+            </div>
+          ) : (
+            <div className="shop-auth">
+              <span className="shop-user">
+                Olá, <strong>{firstName || "cliente"}</strong>
+              </span>
+              <button
+                type="button"
+                className="shop-btn-danger"
+                onClick={handleLogout}
+              >
+                Sair
+              </button>
+            </div>
+          )}
+        </div>
       </div>
     </header>
   );

@@ -8,11 +8,9 @@ export default function ProductList() {
   const page = Number(sp.get('page') || 1);
   const q = sp.get('q') || '';
   const sort = sp.get('sort') || '-createdAt';
-
   const [data, setData] = useState({ items: [], page: 1, pages: 1, total: 0 });
   const [loading, setLoading] = useState(true);
   const [err, setErr] = useState('');
-
   const [qInput, setQInput] = useState(q);
 
   async function load() {

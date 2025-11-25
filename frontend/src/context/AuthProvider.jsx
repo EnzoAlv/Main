@@ -1,53 +1,55 @@
-// frontend/src/context/AuthProvider.jsx
-import { createContext, useContext, useEffect, useState } from 'react';
-import { api } from '../services/api';
+import { createContext, useContext, useState } from "react";
 
 const AuthContext = createContext(null);
 
 export function AuthProvider({ children }) {
+  const [token, setToken] = useState(() => localStorage.getItem("token"));
   const [user, setUser] = useState(() => {
     try {
-      const u = localStorage.getItem('user');
-      return u ? JSON.parse(u) : null;
+      const raw = localStorage.getItem("user");
+      return raw ? JSON.parse(raw) : null;
     } catch {
       return null;
     }
   });
 
-  useEffect(() => {
-    const token = localStorage.getItem('token');
-    if (token) {
-      api.defaults.headers.common.Authorization = `Bearer ${token}`;
-    } else {
-      delete api.defaults.headers.common.Authorization;
+  function setAuth({ token: newToken, user: newUser }) {
+    // Atualiza token
+    if (typeof newToken !== "undefined") {
+      if (newToken) {
+        setToken(newToken);
+        localStorage.setItem("token", newToken);
+      } else {
+        setToken(null);
+        localStorage.removeItem("token");
+      }
     }
-  }, []);
 
-  function setAuth({ token, user }) {
-    if (token) {
-      localStorage.setItem('token', token);
-      api.defaults.headers.common.Authorization = `Bearer ${token}`;
-    } else {
-      localStorage.removeItem('token');
-      delete api.defaults.headers.common.Authorization;
-    }
-    if (user !== undefined) {
-      localStorage.setItem('user', JSON.stringify(user));
-      setUser(user);
-    } else {
-      setUser(null);
+    // Atualiza usuário
+    if (typeof newUser !== "undefined") {
+      setUser(newUser);
+      if (newUser) {
+        localStorage.setItem("user", JSON.stringify(newUser));
+      } else {
+        localStorage.removeItem("user");
+      }
     }
   }
 
   function logout() {
-    localStorage.removeItem('token');
-    localStorage.removeItem('user');
-    delete api.defaults.headers.common.Authorization;
-    setUser(null);
+    setAuth({ token: null, user: null });
   }
 
   return (
-    <AuthContext.Provider value={{ user, setAuth, logout }}>
+    <AuthContext.Provider
+      value={{
+        token,
+        user,
+        isAuthenticated: !!token,
+        setAuth,
+        logout,
+      }}
+    >
       {children}
     </AuthContext.Provider>
   );

@@ -12,8 +12,9 @@ export default function CartBadge() {
     if (!token) { setVisible(false); setCount(0); return; }
     setVisible(true);
     try {
-      const { data } = await api.get('/api/cart/summary');
-      setCount(Number(data?.count ?? 0));
+      const { data } = await api.get("/api/cart/summary");
+setCount(Number(data?.total ?? data?.count ?? 0));
+
     } catch {
       setCount(0);
     }
