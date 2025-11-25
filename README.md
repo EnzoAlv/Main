@@ -7,7 +7,7 @@ Aplicação full stack de e-commerce desenvolvida para a disciplina de Desenvolv
 - Integração com **dois bancos de dados** (MongoDB + SQLite)  
 - **Autenticação com JWT**, hash de senha com bcrypt e rotas protegidas  
 - **Containerização com Docker** (frontend + backend + MongoDB)
-- Link: https://main-kappa-two.vercel.app/products
+- Link: https://main-kappa-two.vercel.app
 
 ---
 
