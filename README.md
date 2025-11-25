@@ -429,6 +429,7 @@ No backend: protect valida JWT antes de processar a rota
 // Enzo Alvarenga Mariano //
 Túlio Teixeira //
 Felipe Pucci //
-Sarah Costa //
+Sarah Costa // 
+Sabrina Costa //
 
 ## como parte da disciplina de Desenvolvimento Web.
