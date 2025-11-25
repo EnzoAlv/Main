@@ -17,7 +17,14 @@ dotenv.config();
 const app = express();
 await connectDB();
 
-app.use(cors({ origin: process.env.CORS_ORIGIN || '*' }));
+app.use(cors({
+  origin: [
+    "http://localhost:5173",            
+    "https://main-kappa-two.vercel.app"   
+  ],
+  methods: ["GET", "POST", "PUT", "DELETE"],
+  credentials: true
+}));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use('/uploads', express.static(process.env.UPLOAD_DIR || 'uploads'));
