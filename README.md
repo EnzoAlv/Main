@@ -426,9 +426,9 @@ No frontend: ProtectedRoute só permite acesso se houver token
 No backend: protect valida JWT antes de processar a rota
 
 ## Projeto desenvolvido pelos integrantes:
-Enzo Alvarenga Mariano
-Túlio Teixeira
-Felipe Pucci
-Sarah Costa
+// Enzo Alvarenga Mariano //
+Túlio Teixeira //
+Felipe Pucci //
+Sarah Costa //
 
 ## como parte da disciplina de Desenvolvimento Web.
