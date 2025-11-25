@@ -1,16 +1,15 @@
-// backend/src/routes/productRoutes.js
 import express from 'express';
 import Product from '../models/Product.js';
-// Se você já tiver middlewares de auth/admin, pode habilitar:
-// import { protect, admin } from '../middleware/authMiddleware.js';
-
 const router = express.Router();
+router.delete("/remove-all", async (req, res) => {
+  try {
+    await Product.deleteMany({});
+    res.json({ message: "Todos os produtos foram removidos!" });
+  } catch (e) {
+    res.status(500).json({ error: e.message });
+  }
+});
 
-/**
- * POST /api/products
- * body: { name, description, price, stock, categories:[], images:[] }
- */
-// router.post('/', protect, admin, async (req, res) => {
 router.post('/', async (req, res) => {
   try {
     const created = await Product.create(req.body);
@@ -20,10 +19,6 @@ router.post('/', async (req, res) => {
   }
 });
 
-/**
- * GET /api/products
- * query: page, limit, q, category, minPrice, maxPrice, sort
- */
 router.get('/', async (req, res) => {
   try {
     const { page = 1, limit = 12, q, category, minPrice, maxPrice, sort } = req.query;
@@ -41,7 +36,7 @@ router.get('/', async (req, res) => {
     const l = Math.min(parseInt(limit), 50);
     const skip = (p - 1) * l;
 
-    // ordenação compatível com o front
+   
     const sortMap = { price: 'price', '-price': '-price', createdAt: 'createdAt', '-createdAt': '-createdAt' };
     const sortBy = sortMap[sort] || '-createdAt';
 
@@ -56,10 +51,6 @@ router.get('/', async (req, res) => {
   }
 });
 
-/**
- * GET /api/products/:id
- * detalhe do produto
- */
 router.get('/:id', async (req, res) => {
   try {
     const item = await Product.findById(req.params.id);
@@ -72,11 +63,6 @@ router.get('/:id', async (req, res) => {
   }
 });
 
-/**
- * PUT /api/products/:id
- * atualizar campos permitidos
- */
-// router.put('/:id', protect, admin, async (req, res) => {
 router.put('/:id', async (req, res) => {
   try {
     const allowed = ['name','description','price','stock','categories','images','isActive'];
@@ -102,11 +88,6 @@ router.put('/:id', async (req, res) => {
   }
 });
 
-/**
- * DELETE /api/products/:id
- * soft delete → isActive=false
- */
-// router.delete('/:id', protect, admin, async (req, res) => {
 router.delete('/:id', async (req, res) => {
   try {
     const updated = await Product.findByIdAndUpdate(
@@ -121,11 +102,6 @@ router.delete('/:id', async (req, res) => {
   }
 });
 
-/**
- * PATCH /api/products/:id/restore
- * reativa produto → isActive=true
- */
-// router.patch('/:id/restore', protect, admin, async (req, res) => {
 router.patch('/:id/restore', async (req, res) => {
   try {
     const updated = await Product.findByIdAndUpdate(
@@ -140,11 +116,6 @@ router.patch('/:id/restore', async (req, res) => {
   }
 });
 
-/**
- * PATCH /api/products/:id/stock
- * Ajusta estoque por delta: { delta: +N | -N }
- */
-// router.patch('/:id/stock', protect, admin, async (req, res) => {
 router.patch('/:id/stock', async (req, res) => {
   try {
     const { delta } = req.body;
@@ -166,10 +137,6 @@ router.patch('/:id/stock', async (req, res) => {
   }
 });
 
-/**
- * (Opcional) GET /api/products/categories/all
- * retorno: ["roupas","eletronicos",...]
- */
 router.get('/categories/all', async (_req, res) => {
   try {
     const cats = await Product.distinct('categories', { isActive: true });

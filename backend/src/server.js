@@ -20,12 +20,9 @@ await connectDB();
 app.use(cors({ origin: process.env.CORS_ORIGIN || '*' }));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-
 app.use('/uploads', express.static(process.env.UPLOAD_DIR || 'uploads'));
-
 app.get('/health', (_, res) => res.json({ ok: true }));
 app.get('/', (_, res) => res.send('API NexusCart está funcionando'));
-
 app.use('/api/users', userRoutes);
 app.use('/api/products', productRoutes);
 app.use('/api/cart', cartRoutes);
